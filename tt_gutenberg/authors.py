@@ -5,7 +5,7 @@ def list_authors(by_languages=False, alias=False):
     data = get_data()
 
     if alias:
-        name_column = "alias"
+        name_column = "author_alias"
     else:
         name_column = "author"
 
