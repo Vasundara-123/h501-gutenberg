@@ -1,29 +1,23 @@
-from .data import get_authors, get_language_counts
+from .transform import get_data
 
 
 def list_authors(by_languages=False, alias=False):
-    authors = get_authors()
+    data = get_data()
 
     if alias:
-        authors = authors.dropna(subset=["alias"])
         name_column = "alias"
     else:
         name_column = "author"
 
+    data = data.dropna(subset=[name_column])
+
     if by_languages:
-        language_counts = get_language_counts()
-
-        authors = authors.merge(
-            language_counts,
-            on="gutenberg_author_id",
-            how="left"
+        language_counts = (
+            data.groupby(name_column)["language"]
+            .nunique()
+            .sort_values(ascending=False)
         )
 
-        authors["language_count"] = authors["language_count"].fillna(0)
+        return language_counts.index.tolist()
 
-        authors = authors.sort_values(
-            "language_count",
-            ascending=False
-        )
-
-    return authors[name_column].tolist()
+    return data[name_column].drop_duplicates().tolist()
