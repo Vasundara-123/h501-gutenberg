@@ -1,20 +1,11 @@
-import pandas as pd
 from . import DATA
 
 
 def get_data():
-    authors = pd.read_csv(
-        f"{DATA}/gutenberg_authors.csv"
-    )
+    authors = DATA["df_authors"]
+    metadata = DATA["df_metadata"]
 
-    metadata = pd.read_csv(
-        f"{DATA}/gutenberg_metadata.csv"
-    )
-
-    metadata = metadata.drop(columns=["author"])
-
-    data = pd.merge(
-        authors,
+    data = authors.merge(
         metadata,
         on="gutenberg_author_id"
     )
